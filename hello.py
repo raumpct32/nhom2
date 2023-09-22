@@ -27,3 +27,5 @@ b = np.array([1, -2])
 
 solution = giai_he_phuong_trinh(A, b)
 print("Nghiệm của hệ phương trình là:", solution)
+for i, x in enumerate(solution):
+    print(f"x_{i + 1} = {x}")

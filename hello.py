@@ -1,31 +1,38 @@
 import numpy as np
 
-def giai_he_phuong_trinh(A, b):
-    n = len(A)
-    x = np.zeros(n)
+def giai_he_phuong_trinh(A, B):
+    try:
+        A_inv = np.linalg.inv(A)
+        X = np.dot(A_inv, B)
+        return X
+    except np.linalg.LinAlgError as e:
+        if "matran" in str(e):
+            return []
+        else:
+            raise e
 
-    # Chuyển ma trận A và vector b thành một ma trận mở rộng
-    augmented_matrix = np.column_stack((A, b))
+# Nhập số phương trình và số ẩn từ người dùng
+n = int(input("Nhập số phương trình: "))
+m = int(input("Nhập số ẩn: "))
 
-    # Áp dụng phương pháp khử Gauss để chuyển ma trận mở rộng về dạng tam giác trên
-    for i in range(n):
-        max_row = np.argmax(np.abs(augmented_matrix[i:, i])) + i
-        augmented_matrix[[i, max_row]] = augmented_matrix[[max_row, i]]
-        for j in range(i + 1, n):
-            ratio = augmented_matrix[j, i] / augmented_matrix[i, i]
-            augmented_matrix[j, :] -= ratio * augmented_matrix[i, :]
+# Khởi tạo ma trận hệ số A và vector b
+A = np.zeros((n, m))
+B = np.zeros(n)
 
-    # Giải hệ phương trình bằng phương pháp lùi
-    for i in range(n - 1, -1, -1):
-        x[i] = (augmented_matrix[i, -1] - np.dot(augmented_matrix[i, i+1:n], x[i+1:n])) / augmented_matrix[i, i]
+# Nhập giá trị cho ma trận A và vector B
+for i in range(n):
+    print(f"Nhập phương trình thứ {i + 1}:")
+    for j in range(m):
+        A[i][j] = float(input(f"Nhập hệ số a[{i + 1},{j + 1}]: "))
+    B[i] = float(input(f"Nhập b[{i + 1}]: "))
 
-    return x
+# Gọi hàm để giải hệ phương trình
+X = giai_he_phuong_trinh(A, B)
 
-# Ví dụ: giải hệ phương trình 3x + 2y - z = 1 và 2x - y + 3z = -2
-A = np.array([[3, 2, -1], [2, -1, 3]])
-b = np.array([1, -2])
-
-solution = giai_he_phuong_trinh(A, b)
-print("Nghiệm của hệ phương trình là:", solution)
-for i, x in enumerate(solution):
-    print(f"x_{i + 1} = {x}")
+if len(X) > 0:
+    print("Nghiệm của hệ phương trình:")
+    print(X)
+elif len(X) == 0:
+    print("Hệ phương trình có vô số nghiệm.")
+else:
+    print("Hệ phương trình vô nghiệm.")

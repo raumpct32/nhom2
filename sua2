@@ -1,0 +1,47 @@
+import numpy as np
+import tkinter as tk
+
+def transpose_matrix():
+    input_values = []
+    for row_entries in matrix_entries:
+        row_values = [entry.get() for entry in row_entries]
+        input_values.extend(row_values)
+
+    matrix = [int(val) for val in input_values]
+    arr = np.array(matrix, ndmin=1)
+    newarr = arr.reshape(3, 3)
+    x = newarr.copy()
+
+    for row in range(3):
+        for col in range(3):
+            if row != col:
+                x[row][col] = newarr[col][row]
+
+    display_original.config(text="Original Matrix:\n" + str(newarr))
+    display_transposed.config(text="Transposed Matrix:\n" + str(x))
+
+root = tk.Tk()
+root.title("Matrix Transpose")
+
+matrix_entries = []
+
+for i in range(3):
+    row_entries = []
+    for j in range(3):
+        label = tk.Label(root, text=f"Row {i + 1}, Col {j + 1}:")
+        label.grid(row=i, column=j * 2)
+        entry = tk.Entry(root)
+        entry.grid(row=i, column=j * 2 + 1)
+        row_entries.append(entry)
+    matrix_entries.append(row_entries)
+
+transpose_button = tk.Button(root, text="Transpose", command=transpose_matrix)
+transpose_button.grid(row=4, column=1)
+
+display_original = tk.Label(root, text="Original Matrix:")
+display_original.grid(row=5, column=0)
+
+display_transposed = tk.Label(root, text="Transposed Matrix:")
+display_transposed.grid(row=5, column=2)
+
+root.mainloop()
